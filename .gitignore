@@ -1,0 +1,19 @@
+# Data
+back/data/**
+
+# Models
+back/trainedmodels/**
+
+# MacOS
+**/.DS_Store
+
+# VS code
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so

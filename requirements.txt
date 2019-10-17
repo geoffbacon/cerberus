@@ -1,0 +1,8 @@
+black
+isort
+pylint
+pycodestyle
+pydocstyle
+allennlp
+streamlit
+python-slugify
