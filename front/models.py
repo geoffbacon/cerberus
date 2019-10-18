@@ -11,12 +11,7 @@ from allennlp.predictors import Predictor
 SERIALIZATION_DIR = "back/trainedmodels"
 CONFIG_DIR = "back/configs"
 TRAIN_CMD = "allennlp train {config} -s {directory} -f --include-package back &"
-TASKS = ["POS tagging", "Translation", "Classification", "Language modeling"]
-PREDICTOR_NAMES = {
-    "pos-tagging": "sentence-tagger",
-    "translation": "seq2seq",
-    "classification": "text_classifier",
-}
+TASKS = ["POS tagging", "Translation", "Classification"]
 
 
 def is_trained(slug):
@@ -81,6 +76,11 @@ def load_model(slug):
     """Return an AllenNLP Predictor for the trained model for `slug`."""
     assert is_trained(slug), "We haven't trained a model to load yet"
     model_file_name = os.path.join(SERIALIZATION_DIR, slug, "model.tar.gz")
+    PREDICTOR_NAMES = {
+        "pos-tagging": "sentence-tagger",
+        "translation": "seq2seq",
+        "classification": "text_classifier",
+    }
     name = PREDICTOR_NAMES[slug]
     return Predictor.from_path(model_file_name, predictor_name=name)
 
@@ -89,3 +89,11 @@ def predict(slug, text):
     """Run trained model for `slug` over user's input `text`."""
     predictor = load_model(slug)
     return predictor.predict(text)
+
+
+def load_labels(slug):
+    """Return a list of output labels in `slug`."""
+    label_file_name = os.path.join(SERIALIZATION_DIR, slug, "vocabulary", "labels.txt")
+    with open(label_file_name) as file:
+        labels = file.readlines()
+    return [label.strip() for label in labels]

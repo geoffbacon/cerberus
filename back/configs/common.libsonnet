@@ -5,7 +5,7 @@
 local TOKEN_EMBEDDING_DIM = 50;
 local CHAR_EMBEDDING_DIM = 8;
 local USE_GPU = false;
-local NUM_EPOCHS = 3;
+local NUM_EPOCHS = 20;
 
 {
     "iterator": {
