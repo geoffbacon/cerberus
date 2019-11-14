@@ -10,7 +10,7 @@ local common = import 'common.libsonnet';
         "source_add_start_token": true
     },
     "train_data_path": "back/data/translation/data.txt",
-    "validation_data_path": "back/data/translation/small.txt",
+    "validation_data_path": "back/data/translation/valid.txt",
     "model": {
         "type": "simple_seq2seq",
         "source_embedder": common["text_field_embedder"],
