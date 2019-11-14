@@ -44,4 +44,4 @@ run:
 	streamlit run front/app.py
 
 .PHONY: requirements install install-dev clean lint format docker-build \
-  docker-run docker-clean
+  docker-run docker-clean run
