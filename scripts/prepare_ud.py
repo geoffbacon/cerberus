@@ -1,8 +1,11 @@
-"""Prepare UD data for evaluations."""
+"""Quick and dirty script to prepare UD data for my different tasks."""
+
 import glob
 import os
 import re
 from xml.etree import ElementTree
+
+from conllu import parse
 
 THRESHOLD = 50_000
 
@@ -26,3 +29,12 @@ def languages_under_threshold(threshold):
 
 languages = languages_under_threshold(THRESHOLD)
 print(languages)
+
+lg = languages[0]
+dir_names = [dir_name for dir_name in os.listdir("back/ud") if lg in dir_name]
+file_names = []
+for dir_name in dir_names:
+    pattern = f"back/ud/{dir_name}/*.conllu"
+    file_names.extend(glob.glob(pattern))
+for file_name in file_names:
+    data = parse(file_name)
