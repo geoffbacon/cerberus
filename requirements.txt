@@ -6,3 +6,5 @@ pydocstyle
 allennlp
 streamlit
 python-slugify
+pandas
+jsonlines

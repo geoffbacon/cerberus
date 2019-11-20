@@ -5,9 +5,11 @@ import os
 import random
 import re
 from xml.etree import ElementTree
+from string import punctuation
 
 import jsonlines
 import pyconll
+from tqdm import tqdm
 
 RAW_UD_DIR = "back/ud/data/raw"
 PROCESSED_UD_DIR = "back/ud/data/processed"
@@ -56,7 +58,36 @@ def parse_for_classification(sentence):
     return {}
 
 
-PARSE_FUNCTIONS = {"classification": parse_for_classification}
+def parse_for_lm(sentence):
+    """Return a language modeling example from `sentence`."""
+    return sentence.text
+
+
+def parse_for_pos_tagging(sentence):
+    """Return a POS tagging example from `sentence`."""
+    try:
+        return " ".join([token.form + "/" + token.upos for token in sentence])
+    except TypeError:  # if a POS tag is missing
+        return ""
+
+
+def parse_for_translation(sentence):
+    try:
+        translation = sentence.meta_value("text_en").lower()
+        translation = "".join([ch for ch in translation if ch not in punctuation])
+        text = sentence.text
+        text = "".join([ch for ch in text if ch not in punctuation])
+        return text + "\t" + translation
+    except KeyError:
+        return ""
+
+
+PARSE_FUNCTIONS = {
+    "classification": parse_for_classification,
+    "language-modeling": parse_for_lm,
+    "pos-tagging": parse_for_pos_tagging,
+    "translation": parse_for_translation,
+}
 
 
 def write(lines, filename, task):
@@ -80,19 +111,24 @@ def create_data(language, task, split=0.2):
     random.shuffle(examples)
     n = int(len(examples) * split)
     train, valid = examples[n:], examples[:n]
-    path = os.path.join(PROCESSED_UD_DIR, task, language)
-    os.makedirs(path, exist_ok=True)
-    if task == "classification":
-        ext = "jsonl"
-    else:
-        ext = "txt"
-    train_filename = os.path.join(path, f"train.{ext}")
-    valid_filename = os.path.join(path, f"valid.{ext}")
-    write(train, train_filename, task)
-    write(valid, valid_filename, task)
+    if 500 <= len(train) <= 3000:
+        path = os.path.join(PROCESSED_UD_DIR, task, language)
+        os.makedirs(path, exist_ok=True)
+        if task == "classification":
+            ext = "jsonl"
+        else:
+            ext = "txt"
+        train_filename = os.path.join(path, f"train.{ext}")
+        valid_filename = os.path.join(path, f"valid.{ext}")
+        write(train, train_filename, task)
+        write(valid, valid_filename, task)
+        print(
+            f"{len(train)} training and {len(valid)} validation {task} examples for {language}"
+        )
 
 
 if __name__ == "__main__":
     languages = languages_under_threshold(50_000)
-    for language in languages:
-        create_data(language, "classification")
+    for language in tqdm(languages):
+        for task in PARSE_FUNCTIONS:
+            create_data(language, task)
