@@ -6,7 +6,7 @@ local common = import 'common.libsonnet';
     "word_tag_delimiter": "/",
     "token_indexers": common["token_indexers"]
   },
-  "train_data_path": "back/data/pos-tagging/data.txt",
+  "train_data_path": "back/data/pos-tagging/train.txt",
   "model": {
     "type": "simple_tagger",
     "text_field_embedder": common["text_field_embedder"],

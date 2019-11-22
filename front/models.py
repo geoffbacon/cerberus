@@ -66,7 +66,10 @@ def get_metrics(slug):
     duration = metrics["training_duration"]
     duration = duration.split(".")[0]  # remove milliseconds
     # for the time being, just get accuracy
-    score = metrics.get("training_accuracy", "Undefined")
+    # try to get validation score first, if that fails then use the training score
+    score = metrics.get("validation_accuracy", "Undefined")
+    if score == "Undefined":
+        score = metrics.get("training_accuracy", "Undefined")
     if isinstance(score, float):
         score = f"{round(score * 100, 1)}%"
     return {"Duration": duration, "Accuracy": score}
