@@ -29,11 +29,11 @@ format:
 
 # build Docker image of project
 docker-build: clean
-	docker build --no-cache --rm --tag cerberus:latest .
+	docker build --no-cache --rm --tag gbacon/cerberus:latest .
 
 # run and enter container from image
 docker-run:
-	docker run -it -p 8080:8080 cerberus:latest bash
+	docker run -it -p 8080:8080 gbacon/cerberus:latest bash
 
 # remove Docker cruft
 docker-clean:
