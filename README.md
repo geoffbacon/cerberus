@@ -17,3 +17,5 @@ Coming soon:
 - **Language modeling**: Generating grammatical sentences.
 
 Cerberus is built on top of [AllenNLP](https://allennlp.org/) and [Streamlit](https://streamlit.io/).
+
+![Cerberus' home page](home-page.png)
